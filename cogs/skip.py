@@ -1,36 +1,8 @@
 import nextcord
 from nextcord.ext import commands
-import wavelink as wavelink
+import wavelinkcord as wavelink
 from cogs.dj import djCommands as dj
 
-class Buttons(nextcord.ui.View):
-
-    def __init__(self, ctx):
-        super().__init__()
-        self.value = None
-    
-    @nextcord.ui.button(label = "Vote Skip", style = nextcord.ButtonStyle.gray)
-    async def accept(self, button : nextcord.ui.Button, interaction : nextcord.Interaction):
-
-        pass
-
-class skipButtons(nextcord.ui.View):
-
-    def __init__(self, ctx):
-        super().__init__()
-        self.value = 0
-
-    
-    @nextcord.ui.button(label = "Vote Skip", style = nextcord.ButtonStyle.gray)
-    async def vote(self, button : nextcord.ui.Button, interaction : nextcord.Interaction):
-
-        self.value += 1
-
-        if self.value >= len(interaction.guild.voice_client.channel.members) - 1:
-            await interaction.response.send_message("Vote Skip Passed!")
-            vc: wavelink.Player = interaction.guild.voice_client
-            await vc.stop()
-            self.stop()
 
 class skipCommands(commands.Cog):
 
@@ -42,27 +14,25 @@ class skipCommands(commands.Cog):
     @nextcord.slash_command(description="Skip the current song")
     async def skip(self, interaction : nextcord.Interaction):
 
-        async def skip():
-            listeners = len(interaction.guild.voice_client.channel.members) - 1
+        #async def skip():
+            #listeners = len(interaction.guild.voice_client.channel.members) - 1
 
-            if listeners == 1:
-                vc: wavelink.Player = interaction.guild.voice_client
-                await vc.stop()
-                if not vc.queue.is_empty:
+            vc: wavelink.Player = interaction.guild.voice_client
+            await vc.stop()
+            if not vc.queue.is_empty:
 
                     await vc.stop()
                     await interaction.response.send_message("Song skipped!")
                 
-                elif vc.queue.loop == True:
+            elif vc.queue.loop == True:    #this does work, but its buggy and if the queue is too long, the last songs dont get looped 
 
                     await interaction.response.send_message("Turn off looping to skip!")
-                else:
+            else:
 
                     await interaction.response.send_message("Cant Skip! There is nothing in the Queue")
-            else:
-                await interaction.response.send_message(f"Vote Skip Started! {listeners} votes needed to skip!", view=skipButtons(interaction))
+            
 
-        await dj.djCheck(self, interaction, skip)
+        #await dj.djCheck(self, interaction, skip)
     
 
 def setup(bot : commands.Bot):

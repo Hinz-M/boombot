@@ -1,6 +1,6 @@
 import nextcord
 from nextcord.ext import commands
-import wavelink as wavelinkcord
+import wavelinkcord as wavelinkcord
 
 class filterCommands(commands.Cog):
 

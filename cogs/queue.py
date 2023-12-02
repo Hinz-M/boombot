@@ -1,8 +1,8 @@
 import nextcord
 from nextcord.ext import commands
-import wavelink as wavelinkcord
+import wavelinkcord as wavelinkcord
 import cogs.embeds as embeds
-from wavelink.ext import spotify
+#from wavelink.ext import spotify
 from cogs.dj import djCommands as dj
 
 
@@ -42,89 +42,75 @@ class queueCommands(commands.Cog):
 
     # Clears the queue using the clear method
     @queue.subcommand(description="Clears the Queue")
-    async def clear(self, interaction : nextcord.Interaction):
-        async def clear():
+    async def clear(self, interaction : nextcord.Interaction):  #this command doesnt work
+        #async def clear():
             vc: wavelinkcord.Player = interaction.guild.voice_client
-            vc.queue.clear()
+            vc.queue._queue.clear()
             await interaction.response.send_message("The Queue Has Been Cleared")
         
-        await dj.djCheck(self, interaction, clear)
+       # await dj.djCheck(self, interaction, clear)
     
     # Removes a song from the queue
     @queue.subcommand(description="Removes a specific song from the queue")
-    async def remove(self,interaction : nextcord.Interaction, song : str):
+    async def remove(self, interaction: nextcord.Interaction, position: int):
+      #async def remove():
+        vc: wavelinkcord.Player = interaction.guild.voice_client
 
-        async def remove():
+        if position < 1 or position > len(vc.queue):
+            await interaction.response.send_message("Invalid position. Please provide a valid position in the queue.")
+            return
 
-            vc: wavelinkcord.Player = interaction.guild.voice_client
+        queue = list(vc.queue)
 
-            #This bit of code copys the queue object from the vc object then converts it to a list and removes the song from the list
-            queue = vc.queue.copy()
-            queue = list(queue)
+        try:
+            removed_song = queue.pop(position - 1)
+            await interaction.response.send_message(f"Successfully removed {removed_song.title} {removed_song.uri}!")
+        except IndexError:
+            await interaction.response.send_message("Song not found in queue!")
 
-            decoded = spotify.decode_url(song)
-            if not decoded or decoded['type'] is not spotify.SpotifySearchType.track:
-                query = await wavelinkcord.YouTubeTrack.search(song, return_first=True)
-            else:
-                query = await spotify.SpotifyTrack.search(song)
+        vc.queue._queue = queue
 
-            try:
-                queue.remove(query)
-                await interaction.response.send_message(f"Sucsessfully removed {query.title} {query.uri}!")
+        if not vc.is_playing():
+            if len(vc.queue) > 0:
+                next_song = await vc.queue.get()
+                await vc.play(next_song)
 
-            except:
-                await interaction.response.send_message("Song not found in queue!")
-
-            vc.queue.clear()
-
-            # After clearing the queue, we loop through the queue and assign the songs to the player queue
-            for song in queue:
-
-                await vc.queue.put_wait(song)
-        
-        await dj.djCheck(self, interaction, remove)
+        #await remove()
 
     
     # Skips to a specific song in the queue
     @queue.subcommand(description="Removes a specific song from the queue")
-    async def skipto(self, interaction : nextcord.Interaction, song_name : str):
-
+    async def skipto(self, interaction: nextcord.Interaction, position: int):
         async def skipto():
             vc: wavelinkcord.Player = interaction.guild.voice_client
 
-            decoded = spotify.decode_url(song_name)
-            # This checks if the song is a spotify song, if no then searches on youtube
-            if not decoded or decoded['type'] is not spotify.SpotifySearchType.track:
+            if position < 1 or position > len(vc.queue):
+                await interaction.response.send_message("Invalid position. Please provide a valid position in the queue.")
+                return
 
-                query: list[wavelinkcord.YouTubeMusicTrack] = await wavelinkcord.YouTubeMusicTrack.search(song_name)
-                query: wavelinkcord.YouTubeTrack = query[0]
-                embed = embeds.playEmbed(query, vc)
-            # If it is a spotify track then it searches on spotify
+            queue = list(vc.queue)
+
+            # Retrieve the song at the specified position
+            song = queue[position - 1]
+
+            # Play the song and remove it from the queue
+            await vc.play(song)
+            queue.remove(song)
+
+            # Update the queue in the player
+            vc.queue._queue = queue
+
+            # Send the appropriate embed based on the song source (YouTube or Spotify)
+            if isinstance(song, wavelinkcord.YouTubeTrack):
+                embed = embeds.playEmbed(song, vc)
+            elif isinstance(song, spotify.SpotifyTrack):
+                embed = embeds.whatsPlayingSpotify(song, vc)
             else:
-                query: list[spotify.SpotifyTrack] = await spotify.SpotifyTrack(song_name)
-                query: spotify.SpotifyTrack = query[0]
-                embed = embeds.whatsPlayingSpotify(query, vc)
+                embed = None
 
-            # Copies the queue to a list
-            queue = vc.queue.copy()
-            queue = list(queue)
+            await interaction.response.send_message(embed=embed)
 
-            # Iterates through the queue until it finds the song needed
-            for song in queue:
-                if song.uri == query.uri:
-                    await vc.play(song)
-                    queue.remove(song)
-                    await interaction.response.send_message(embed=embed)
-                    break
-            
-            # Clears the track queue and adds the songs back to the queue
-            vc.queue.clear()
-
-            for song in queue:
-                await vc.queue.put_wait(song)
-        
-        # Checks if the user is a dj
-        await dj.djCheck(self, interaction, skipto)
+        await skipto()
     
 
 

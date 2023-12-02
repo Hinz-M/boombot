@@ -9,8 +9,10 @@ def playEmbed(query, vc):
     embed.set_thumbnail(url=query.thumbnail)
     embed.add_field(name="Channel", value=vc.channel.name, inline=True)
     embed.add_field(name="Duration", value=round((query.duration / 1000) / 60, 2), inline=True)
-    embed.add_field(name="Position in Queue", value=len(vc.queue) + 1, inline=False)
-
+    if len(vc.queue) == 0:
+        embed.add_field(name="Position in Queue", value=len(0), inline=False)
+    else:
+        embed.add_field(name="Position in Queue", value=len(vc.queue) + 1, inline=False)
     return embed
 
 # embed when whatsplaying command is run
@@ -55,6 +57,6 @@ def helpCommand():
     embed.add_field(name="`/ping`", value="Shows the Bots Latency", inline=False)
     embed.add_field(name="`/amount`", value="Shows the amount of guilds the bot is in", inline=False)
     embed.add_field(name="`/help`", value="Shows this message", inline=False)
-    embed.set_footer(text="Made by @Zyb3rWolfi#3614")
+    embed.set_footer(text="Made by @Zyb3rWolfi#3614, fixed by Soul")
 
     return embed

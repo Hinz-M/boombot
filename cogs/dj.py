@@ -1,7 +1,7 @@
 import nextcord
 from nextcord.ext import commands
-import wavelink as wavelink
-from wavelink.ext import spotify
+import wavelinkcord as wavelink
+#from wavelink.ext import spotify
 import sqlite3
 from nextcord.ext import application_checks
 

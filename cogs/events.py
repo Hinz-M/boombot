@@ -1,6 +1,6 @@
 import nextcord
 from nextcord.ext import commands, tasks
-import wavelink as wavelinkcord
+import wavelinkcord as wavelinkcord
 import sqlite3
 import random
 from nextcord.ext import application_checks
