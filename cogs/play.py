@@ -3,17 +3,19 @@ from nextcord.ext import commands
 import wavelinkcord as wavelink
 #from wavelink.ext import spotify
 import cogs.embeds as embeds
+
+
 import sqlite3
 import re
 import os
 import shutil
 import random
 import requests
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
 #from cogs.dj import djCommands as dj
 
-#database = sqlite3.connect('database.db')
-#cursor = database.cursor()
+database = sqlite3.connect('database.db')
+cursor = database.cursor()
 
 class playCommands(commands.Cog):
 
@@ -33,6 +35,7 @@ class playCommands(commands.Cog):
    
         if not interaction.guild.voice_client:
             vc: wavelink.Player = await destination.connect(cls = wavelink.Player)
+            
         else:
             if (interaction.guild.voice_client.channel.id != destination.id):
                 Player = interaction.guild.voice_client  
@@ -279,13 +282,13 @@ def playEmbed(query, vc):
 
     return embed
 
-def get_track_links(soundcloud_set_url):
+def get_track_links(soundcloud_set_url):#this function is not working, i tried to get the links of the songs in a soundcloud set
     response = requests.get(soundcloud_set_url)
     html_content = response.text
-    soup = BeautifulSoup(html_content, 'html.parser')
+    #soup = BeautifulSoup(html_content, 'html.parser')
 
     track_links = []
-    tracks = soup.find_all('a', class_='trackItem__trackTitle')
+    #tracks = soup.find_all('a', class_='trackItem__trackTitle')
     for track in tracks:
         link = track['href']
         track_links.append(link)

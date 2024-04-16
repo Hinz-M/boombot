@@ -76,8 +76,6 @@ class queueCommands(commands.Cog):
                 await vc.play(next_song)
 
         #await remove()
-
-    
     # Skips to a specific song in the queue
     @queue.subcommand(description="Removes a specific song from the queue")
     async def skipto(self, interaction: nextcord.Interaction, position: int):
@@ -117,3 +115,5 @@ class queueCommands(commands.Cog):
 
 def setup(bot : commands.Bot):
     bot.add_cog(queueCommands(bot))
+
+    

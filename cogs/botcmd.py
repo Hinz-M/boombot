@@ -6,7 +6,8 @@ import sqlite3
 
 database = sqlite3.connect('database.db')
 cursor = database.cursor()
-
+basedata = sqlite3.connect('basedata.db')
+crosshair = basedata.cursor()
 # This is mainly utility commands for the bot like checking the latency, amount of servers, etc.
 
 class BotCommands(commands.Cog):
@@ -15,7 +16,7 @@ class BotCommands(commands.Cog):
         print("Bot Commands Loaded")
         self.bot = bot
     
-    @nextcord.slash_command(guild_ids=[708632631901683723], name="about", description="About the Bot")
+    @nextcord.slash_command( name="about", description="About the Bot")#guild_ids=[708632631901683723],
     async def about(self, interaction : nextcord.Interaction):
 
         em = nextcord.Embed(title="About The Bot") # IF QUEUE IS NOT EMPTY SEND AN EMBED
@@ -40,7 +41,7 @@ class BotCommands(commands.Cog):
             
             await interaction.response.send_message(f"Pong! {round(self.bot.latency * 1000)}ms")
     
-    @nextcord.slash_command(name="update", description="Updates Database", guild_ids=[708632631901683723])
+    @nextcord.slash_command(name="update", description="Updates Database")#, guild_ids=[708632631901683723]
     async def update(self, interaction : nextcord.Interaction):
 
         query = "SELECT * FROM guilds WHERE guild_id = ?"
@@ -51,6 +52,9 @@ class BotCommands(commands.Cog):
 
             query = "INSERT INTO guilds VALUES (?,?,?)"
             cursor.execute(query, (guild.id, 0, 0,))
+            query1 = "INSERT INTO guilds VALUES (?,?)"
+            crosshair.execute(query1, (guild.id, 0, ))
+            basedata.commit()
             database.commit()
 
             await interaction.send("Database Updated")

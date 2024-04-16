@@ -44,7 +44,7 @@ def helpCommand():
     embed.add_field(name="`/resume`", value="Resumes the current song", inline=False)
     embed.add_field(name="`/skip`", value="Skips the current song", inline=False)
     embed.add_field(name="`/disconnect`", value="Disconnects the bot", inline=False)
-    embed.add_field(name="`/queue`", value="Shows the current queue", inline=False)
+    embed.add_field(name="`/queue show`", value="Shows the current queue", inline=False)
     embed.add_field(name="`/queue clear`", value="Clears the current queue", inline=False)
     embed.add_field(name="`/queue remove`", value="Removes a song from the queue", inline=False)
     embed.add_field(name="`/queue skipto`", value="Skips to a specific song in the queue", inline=False)
@@ -57,6 +57,13 @@ def helpCommand():
     embed.add_field(name="`/ping`", value="Shows the Bots Latency", inline=False)
     embed.add_field(name="`/amount`", value="Shows the amount of guilds the bot is in", inline=False)
     embed.add_field(name="`/help`", value="Shows this message", inline=False)
+    embed.add_field(name="`/radio toggle`", value="Turns the radio on or off", inline=False)
+    embed.add_field(name="`/radio remove`", value="Removes a Playlist from the List", inline=False)
+    embed.add_field(name="`/radio add`", value="Adds a Playlist(link) to the List", inline=False)
+    embed.add_field(name="`/radio showlist`", value="Shows the List of Playlistlinks", inline=False)
+    
+    
+    
     embed.set_footer(text="Made by @Zyb3rWolfi#3614, fixed by Soul")
 
     return embed

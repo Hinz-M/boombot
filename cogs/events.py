@@ -4,6 +4,7 @@ import wavelinkcord as wavelinkcord
 import sqlite3
 import random
 from nextcord.ext import application_checks
+import cogs.radio as radio
 database = sqlite3.connect('database.db')
 cursor = database.cursor()
 
@@ -58,6 +59,11 @@ class Events(commands.Cog):
         elif vc.queue.loop == True:
              # If loop is on
             await vc.play(i.track)
+        elif not vc.is_playing():
+            await self.bot.get_cog('radioCommands').play_radio(vc) #.guild_id
+            #await self.bot.get_cog('radioCommands').play_radio(vc) #.guild_id
+       
+            
     
     @commands.Cog.listener()
     async def on_guild_join(self, guild):

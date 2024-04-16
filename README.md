@@ -7,7 +7,8 @@ SBot is a Discord music bot written in Python which utilizes the WaveLink librar
 ## Features
 
 - Play Youtube & Spotify Songs
-- Has SoundCloud Support, but not for Playlists/Albums
+- --Has SoundCloud Support, but not for Playlists/Albums--
+-> not anymore, lavalink somehow isnt support it anymore
 - Shuffling
 - Youtube Playlist Support
 - Can Remoteplay for other users in a Server
