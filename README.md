@@ -17,11 +17,7 @@ SBot is a Discord music bot written in Python which utilizes the WaveLink librar
 
 ## Installation
 
-Download the source code and add your own bot token at ```main.py```
-
-```python
-bot.run("TOKEN")
-```
+Download the code and add your own bot token in a .txt file named token.txt
 
 
 
